@@ -89,26 +89,26 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getBroadcast(final Promise promise) throws Exception {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    String ipAddress = null;
+	public void getBroadcast(final Promise promise) throws Exception {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					String ipAddress = null;
 
-                    for (InterfaceAddress address : getInetAddresses()) {
-                        if (!address.getAddress()
-                                .isLoopbackAddress()/* address.getAddress().toString().equalsIgnoreCase(ip) */) {
-                            ipAddress = address.getBroadcast().toString();
-                        }
-                    }
-                    promise.resolve(ipAddress);
-                } catch (Exception e) {
-                    promise.resolve(null);
-                }
+					for (InterfaceAddress address : getInetAddresses()) {
+						if (!address.getAddress()
+							.isLoopbackAddress() && address.getAddress() instanceof Inet4Address) {
+							ipAddress = address.getBroadcast().toString().substring(1);
+						}
+					}
+					promise.resolve(ipAddress);
+				} catch (Exception e) {
+					promise.resolve(null);
+				}
 
-            }
-        }).start();
-    }
+			}
+		}).start();
+	}
 
     @ReactMethod
     public void getIPAddress(final Promise promise) throws Exception {
